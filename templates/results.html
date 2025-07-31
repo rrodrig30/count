@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis Results - Count</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .results-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            margin-top: 50px;
+            padding: 40px;
+        }
+        
+        .result-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .result-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .result-number {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .result-label {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .file-info {
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 50px;
+            padding: 12px 30px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .copyright {
+            text-align: center;
+            margin-top: 30px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .icon-large {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="results-container">
+                    <div class="text-center mb-4">
+                        <h1 class="display-4 fw-bold text-primary">
+                            <i class="fas fa-chart-line me-3"></i>Analysis Results
+                        </h1>
+                        <p class="lead text-muted">Comprehensive Document Statistics</p>
+                    </div>
+                    
+                    <div class="file-info">
+                        <h4 class="mb-2">
+                            <i class="fas fa-file-alt me-2 text-primary"></i>
+                            {{ results.filename }}
+                        </h4>
+                        <p class="text-muted mb-0">Document successfully analyzed</p>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 col-lg-3">
+                            <div class="result-card">
+                                <i class="fas fa-sort-numeric-up icon-large"></i>
+                                <div class="result-number">{{ "{:,}".format(results.word_count) }}</div>
+                                <div class="result-label">Words</div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 col-lg-3">
+                            <div class="result-card">
+                                <i class="fas fa-font icon-large"></i>
+                                <div class="result-number">{{ "{:,}".format(results.character_count) }}</div>
+                                <div class="result-label">Characters</div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 col-lg-3">
+                            <div class="result-card">
+                                <i class="fas fa-space-shuttle icon-large"></i>
+                                <div class="result-number">{{ "{:,}".format(results.whitespace_count) }}</div>
+                                <div class="result-label">Whitespaces</div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 col-lg-3">
+                            <div class="result-card">
+                                <i class="fas fa-list-ol icon-large"></i>
+                                <div class="result-number">{{ "{:,}".format(results.line_count) }}</div>
+                                <div class="result-label">Lines</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-lg-6">
+                            <div class="card border-0 h-100" style="background: rgba(102, 126, 234, 0.1);">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">
+                                        <i class="fas fa-calculator text-primary me-2"></i>
+                                        Calculated Metrics
+                                    </h5>
+                                    <ul class="list-unstyled">
+                                        <li class="mb-2">
+                                            <strong>Average Word Length:</strong> 
+                                            {% if results.word_count > 0 %}
+                                                {{ "%.1f"|format((results.character_count - results.whitespace_count) / results.word_count) }} chars
+                                            {% else %}
+                                                N/A
+                                            {% endif %}
+                                        </li>
+                                        <li class="mb-2">
+                                            <strong>Words per Line:</strong> 
+                                            {% if results.line_count > 0 %}
+                                                {{ "%.1f"|format(results.word_count / results.line_count) }}
+                                            {% else %}
+                                                N/A
+                                            {% endif %}
+                                        </li>
+                                        <li class="mb-2">
+                                            <strong>Characters per Line:</strong> 
+                                            {% if results.line_count > 0 %}
+                                                {{ "%.1f"|format(results.character_count / results.line_count) }}
+                                            {% else %}
+                                                N/A
+                                            {% endif %}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-6">
+                            <div class="card border-0 h-100" style="background: rgba(118, 75, 162, 0.1);">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">
+                                        <i class="fas fa-percentage text-primary me-2"></i>
+                                        Composition Analysis
+                                    </h5>
+                                    <ul class="list-unstyled">
+                                        <li class="mb-2">
+                                            <strong>Text Characters:</strong> 
+                                            {{ "{:,}".format(results.character_count - results.whitespace_count) }}
+                                            ({{ "%.1f"|format(((results.character_count - results.whitespace_count) / results.character_count * 100) if results.character_count > 0 else 0) }}%)
+                                        </li>
+                                        <li class="mb-2">
+                                            <strong>Whitespace:</strong> 
+                                            {{ "{:,}".format(results.whitespace_count) }}
+                                            ({{ "%.1f"|format((results.whitespace_count / results.character_count * 100) if results.character_count > 0 else 0) }}%)
+                                        </li>
+                                        <li class="mb-2">
+                                            <strong>Document Density:</strong> 
+                                            {% if results.line_count > 0 and results.character_count > 0 %}
+                                                {{ "%.1f"|format((results.word_count / results.line_count) * 10) }}% filled
+                                            {% else %}
+                                                N/A
+                                            {% endif %}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg me-3">
+                            <i class="fas fa-upload me-2"></i>Analyze Another Document
+                        </a>
+                        <button onclick="window.print()" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-print me-2"></i>Print Results
+                        </button>
+                    </div>
+                    
+                    <div class="copyright">
+                        <p>&copy; 2025 Count Document Analyzer. All rights reserved.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const resultCards = document.querySelectorAll('.result-card');
+            
+            resultCards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(30px)';
+                    card.style.transition = 'all 0.6s ease';
+                    
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 100);
+                }, index * 200);
+            });
+        });
+    </script>
+</body>
+</html>

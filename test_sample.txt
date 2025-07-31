@@ -1,0 +1,7 @@
+This is a test document.
+It has multiple lines.
+Word count: 8 words
+Character count: 56 characters
+Line count: 4 lines
+
+Testing the Count application!
